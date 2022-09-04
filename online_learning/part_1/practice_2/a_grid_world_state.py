@@ -1,6 +1,6 @@
 import numpy as np
 
-from online_learning.env.a_grid_word import GridWorld
+from online_learning.common.a_grid_word import GridWorld
 from online_learning.common.e_util import draw_grid_world_state_values_image
 
 GRID_HEIGHT = 5

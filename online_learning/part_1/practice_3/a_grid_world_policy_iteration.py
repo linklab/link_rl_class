@@ -1,6 +1,6 @@
 import numpy as np
 
-from online_learning.env.a_grid_word import GridWorld
+from online_learning.common.a_grid_word import GridWorld
 from online_learning.common.e_util import softmax, draw_grid_world_state_values_image, draw_grid_world_action_values_image, \
 	draw_grid_world_optimal_policy_image
 
@@ -167,8 +167,8 @@ class PolicyIteration:
 
 
 def main():
-    # 그리드 월드 환경 객체 생성
-    env = GridWorld(
+	# 그리드 월드 환경 객체 생성
+	env = GridWorld(
         height=GRID_HEIGHT,
         width=GRID_WIDTH,
         start_state=(0, 0),
@@ -177,27 +177,27 @@ def main():
         terminal_reward=-1.0,
         outward_reward=-1.0
     )
-    env.reset()
+	env.reset()
 
-    PI = PolicyIteration(env)
-    PI.start_iteration()
+	PI = PolicyIteration(env)
+	PI.start_iteration()
 
-    print(PI.state_values)
+	print(PI.state_values)
 
-    draw_grid_world_state_values_image(
-        PI.state_values, GRID_HEIGHT, GRID_WIDTH
-    )
+	draw_grid_world_state_values_image(
+		PI.state_values, GRID_HEIGHT, GRID_WIDTH
+	)
 
-    draw_grid_world_action_values_image(
-        PI.calculate_grid_world_optimal_action_values(),
-        GRID_HEIGHT, GRID_WIDTH, env.NUM_ACTIONS, env.ACTION_SYMBOLS
-    )
+	draw_grid_world_action_values_image(
+		PI.calculate_grid_world_optimal_action_values(),
+		GRID_HEIGHT, GRID_WIDTH, env.NUM_ACTIONS, env.ACTION_SYMBOLS
+	)
 
-    draw_grid_world_optimal_policy_image(
-        PI.calculate_optimal_policy(),
-        GRID_HEIGHT, GRID_WIDTH, env.ACTION_SYMBOLS
-    )
+	draw_grid_world_optimal_policy_image(
+		PI.calculate_optimal_policy(),
+		GRID_HEIGHT, GRID_WIDTH, env.ACTION_SYMBOLS
+	)
 
 
 if __name__ == "__main__":
-    main()
+	main()

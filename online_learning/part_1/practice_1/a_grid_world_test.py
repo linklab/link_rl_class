@@ -1,6 +1,6 @@
 import time
 
-from online_learning.env.a_grid_word import GridWorld
+from online_learning.common.a_grid_word import GridWorld
 
 
 def main():

@@ -1,6 +1,6 @@
 import numpy as np
 
-from online_learning.env.a_grid_word import GridWorld
+from online_learning.common.a_grid_word import GridWorld
 from online_learning.common.e_util import softmax, draw_grid_world_state_values_image, draw_grid_world_action_values_image, \
     draw_grid_world_optimal_policy_image
 

@@ -1,6 +1,6 @@
 import time
 
-from online_learning.env.b_random_walk import RandomWalk
+from online_learning.common.b_random_walk import RandomWalk
 
 
 def main():

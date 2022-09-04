@@ -1,6 +1,6 @@
 import time
 
-from online_learning.env.c_maze import Maze
+from online_learning.common.c_maze import Maze
 
 
 def main():
