@@ -5,16 +5,13 @@ import random
 import time
 
 env = gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=False, render_mode="human")
-
 ACTION_STRING_LIST = [" LEFT", " DOWN", "RIGHT", "   UP"]
-
 
 class Dummy_Agent:
     def get_action(self, observation):
         available_action_ids = [0, 1, 2, 3]
         action_id = random.choice(available_action_ids)
         return action_id
-
 
 def run_env():
     print("START RUN!!!")
@@ -38,3 +35,4 @@ def run_env():
 
 if __name__ == "__main__":
     run_env()
+

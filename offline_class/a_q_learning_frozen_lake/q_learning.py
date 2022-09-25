@@ -58,8 +58,7 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
     td_error_list = []
 
     training_time_steps = 0
-    last_episode_reward = 0
-
+    td_error = 0.0
     is_train_success = False
 
     for episode in range(1, num_episodes + 1):
@@ -87,8 +86,6 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
             q_table[observation, action] = q_table[observation, action] + alpha * td_error
 
             training_time_steps += 1  # Q-table 업데이트 횟수
-            episode_reward_list.append(last_episode_reward)
-            td_error_list.append(td_error)
 
             sList.append(next_observation)
             observation = next_observation
@@ -99,7 +96,8 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
             "Episode Steps: {0:>2}, Visited States: {1}, Episode Reward: {2}".format(episode_step, sList, episode_reward),
             "GOAL" if done and observation == 15 else ""
         )
-        last_episode_reward = episode_reward
+        episode_reward_list.append(episode_reward)
+        td_error_list.append(td_error)
 
         if episode % 10 == 0:
             episode_reward_list_test, avg_episode_reward_test = q_learning_testing(
@@ -113,7 +111,7 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
                 is_train_success = True
                 break
 
-    return q_table, training_time_steps, episode_reward_list, td_error_list, is_train_success
+    return q_table, episode, episode_reward_list, td_error_list, is_train_success
 
 
 def q_learning_testing(num_test_episodes, q_table):
@@ -170,7 +168,7 @@ def main_q_table_learning():
     GAMMA = 0.95
     EPSILON = 0.1
 
-    q_table, training_time_steps, episode_reward_list, td_error_list, is_train_success = q_learning(
+    q_table, episodes, episode_reward_list, td_error_list, is_train_success = q_learning(
         NUM_EPISODES, NUM_TEST_EPISODES, ALPHA, GAMMA, EPSILON
     )
     print("\nFinal Q-Table Values")
@@ -181,13 +179,13 @@ def main_q_table_learning():
             print("{0:5.3f} ".format(action_state), end=" ")
         print()
 
-    plt.plot(range(training_time_steps), episode_reward_list, color="blue")
-    plt.xlabel("training steps")
+    plt.plot(range(episodes), episode_reward_list, color="blue")
+    plt.xlabel("episodes")
     plt.ylabel("episode reward (blue)")
     plt.show()
 
-    plt.plot(range(training_time_steps), td_error_list, color="red")
-    plt.xlabel("training steps")
+    plt.plot(range(episodes), td_error_list, color="red")
+    plt.xlabel("episodes")
     plt.ylabel("td_error (red)")
     plt.show()
 
