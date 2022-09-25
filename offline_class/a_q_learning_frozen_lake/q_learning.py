@@ -7,8 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-print("gym.__version__", gym.__version__)
-
 np.set_printoptions(precision=3)
 np.set_printoptions(suppress=True)
 
@@ -57,6 +55,7 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
     )
 
     episode_reward_list = []
+    td_error_list = []
 
     training_time_steps = 0
     last_episode_reward = 0
@@ -76,7 +75,6 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
 
         # The Q-Table 알고리즘
         while not done and not truncated:
-            episode_step += 1
             action = epsilon_greedy_action(q_table[observation, :], epsilon)
 
             # action을 통해서 next_state, reward, done, info를 받아온다
@@ -90,9 +88,12 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
 
             training_time_steps += 1  # Q-table 업데이트 횟수
             episode_reward_list.append(last_episode_reward)
+            td_error_list.append(td_error)
 
             sList.append(next_observation)
             observation = next_observation
+
+            episode_step += 1
 
         print(
             "Episode Steps: {0:>2}, Visited States: {1}, Episode Reward: {2}".format(episode_step, sList, episode_reward),
@@ -112,7 +113,7 @@ def q_learning(num_episodes=500, num_test_episodes=7, alpha=0.1, gamma=0.95, eps
                 is_train_success = True
                 break
 
-    return q_table, training_time_steps, episode_reward_list, is_train_success
+    return q_table, training_time_steps, episode_reward_list, td_error_list, is_train_success
 
 
 def q_learning_testing(num_test_episodes, q_table):
@@ -122,17 +123,17 @@ def q_learning_testing(num_test_episodes, q_table):
 
     for episode in range(num_test_episodes):
         episode_reward = 0  # cumulative_reward
-        episode_step = 0
+        episode_step = 1
 
         observation, _ = test_env.reset()
 
-        done = False
-        while not done:
-            episode_step += 1
+        done = truncated = False
+        while not done and not truncated:
             action = greedy_action(q_table[observation, :])
             next_observation, reward, done, truncated, _ = test_env.step(action)
             episode_reward += reward  # episode_reward 를 산출하는 방법은 감가률 고려하지 않는 이 라인이 더 올바름.
             observation = next_observation
+            episode_step += 1
 
         episode_reward_list.append(episode_reward)
 
@@ -140,15 +141,26 @@ def q_learning_testing(num_test_episodes, q_table):
 
 
 def q_learning_playing(q_table):
-    test_env = gym.make('FrozenLake-v1', desc=DESC, map_name=MAP_NAME, is_slippery=IS_SLIPPERY, render_mode="human")
-    observation, _ = test_env.reset()
+    play_env = gym.make('FrozenLake-v1', desc=DESC, map_name=MAP_NAME, is_slippery=IS_SLIPPERY, render_mode="human")
+    observation, _ = play_env.reset()
     time.sleep(1)
-    done = False
-    while not done:
+
+    done = truncated = False
+    episode_reward = 0.0
+    episode_step = 1
+
+    while not done and not truncated:
         action = greedy_action(q_table[observation, :])
-        next_observation, reward, done, truncated, _ = test_env.step(action)
+        next_observation, reward, done, truncated, _ = play_env.step(action)
+        episode_reward += reward
         observation = next_observation
+        episode_step += 1
         time.sleep(1)
+
+    if episode_reward >= 1.0:
+        print("PLAY EPISODE SUCCESS!!! (TOTAL STEPS: {0})".format(episode_step))
+    else:
+        print("PLAY EPISODE FAILED!!! (TOTAL STEPS: {0})".format(episode_step))
 
 
 def main_q_table_learning():
@@ -158,7 +170,7 @@ def main_q_table_learning():
     GAMMA = 0.95
     EPSILON = 0.1
 
-    q_table, training_time_steps, episode_reward_list, is_train_success = q_learning(
+    q_table, training_time_steps, episode_reward_list, td_error_list, is_train_success = q_learning(
         NUM_EPISODES, NUM_TEST_EPISODES, ALPHA, GAMMA, EPSILON
     )
     print("\nFinal Q-Table Values")
@@ -169,13 +181,20 @@ def main_q_table_learning():
             print("{0:5.3f} ".format(action_state), end=" ")
         print()
 
-    plt.plot(range(training_time_steps), episode_reward_list, color="Blue")
+    plt.plot(range(training_time_steps), episode_reward_list, color="blue")
     plt.xlabel("training steps")
-    plt.ylabel("episode reward")
+    plt.ylabel("episode reward (blue)")
+    plt.show()
+
+    plt.plot(range(training_time_steps), td_error_list, color="red")
+    plt.xlabel("training steps")
+    plt.ylabel("td_error (red)")
     plt.show()
 
     if is_train_success:
         q_learning_playing(q_table=q_table)
+    else:
+        print("NO PLAYING!!!")
 
 
 if __name__ == "__main__":

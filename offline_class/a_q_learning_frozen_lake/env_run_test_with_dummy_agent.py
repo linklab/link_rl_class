@@ -4,8 +4,6 @@ import gym
 import random
 import time
 
-print("gym.__version__", gym.__version__)
-
 env = gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=False, render_mode="human")
 
 ACTION_STRING_LIST = [" LEFT", " DOWN", "RIGHT", "   UP"]
@@ -22,20 +20,19 @@ def run_env():
     print("START RUN!!!")
     agent = Dummy_Agent()
     observation, info = env.reset()
-    env.render()
 
     done = truncated = False
     episode_step = 1
     while not done and not truncated:
-        episode_step += 1
         action = agent.get_action(observation)
         next_observation, reward, done, truncated, info = env.step(action)
-        env.render()
+
         print("[Step: {0:3}] Obs.: {1:>2}, Action: {2}({3}), Next Obs.: {4}, Reward: {5}, Done: {6}, Truncated: {7}, "
               "Info: {8}".format(
             episode_step, observation, action, ACTION_STRING_LIST[action], next_observation, reward, done, truncated, info
         ))
         observation = next_observation
+        episode_step += 1
         time.sleep(2)
 
 

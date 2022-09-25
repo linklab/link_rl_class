@@ -3,7 +3,7 @@
 import gym
 import time
 
-print("gym.__version__", gym.__version__)
+print("gym.__version__:", gym.__version__)
 
 env = gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=False, render_mode="human")
 
