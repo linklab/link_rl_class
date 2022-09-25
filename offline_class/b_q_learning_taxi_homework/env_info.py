@@ -1,13 +1,13 @@
-# https://www.gymlibrary.dev/environments/toy_text/frozen_lake/
+# https://www.gymlibrary.dev/environments/toy_text/taxi/
 # pip install gym[all]
 import gym
 import time
 
-print("gym.__version__:", gym.__version__)
+print("gym.__version__", gym.__version__)
 
-env = gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=False, render_mode="human")
+env = gym.make('Taxi-v3')
 
-ACTION_STRING_LIST = [" LEFT", " DOWN", "RIGHT", "   UP"]
+ACTION_STRING_LIST = ["  SOUTH", "  NORTH", "   EAST", "   WEST", " PICKUP", "DROPOFF"]
 
 
 def env_info_details():
@@ -46,7 +46,7 @@ def env_info_details():
     # We can render the environment to see where we are on the 4x4 frozenlake gridworld
     observation, info = env.reset()
 
-    action = 2  # RIGHT
+    action = 2  # EAST
     next_observation, reward, done, truncated, info = env.step(action)
 
     # Prob = 1: deterministic policy, if we choose to go right, we'll go right
@@ -58,7 +58,7 @@ def env_info_details():
 
     time.sleep(3)
 
-    action = 1  # DOWN
+    action = 1  # NORTH
     next_observation, reward, done, truncated, info = env.step(action)
 
     print("Obs.: {0}, Action: {1}({2}), Next Obs.: {3}, Reward: {4}, Done: {5}, Truncated: {6}, Info: {7}".format(
@@ -67,6 +67,7 @@ def env_info_details():
 
     print("*" * 80)
     time.sleep(3)
+
 
 if __name__ == "__main__":
     env_info_details()
