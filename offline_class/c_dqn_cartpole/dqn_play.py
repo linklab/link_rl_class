@@ -1,14 +1,11 @@
-# https://www.deeplearningwizard.com/deep_learning/deep_reinforcement_learning_pytorch/dynamic_programming_frozenlake/
+# https://www.gymlibrary.dev/environments/classic_control/cart_pole/
 # -*- coding: utf-8 -*-
-import random
 import sys
-import time
-
 import gym
 import torch
 import os
 
-from b_dqn.cartpole_dqn.qnet import QNet
+from offline_class.c_dqn_cartpole.qnet import QNet
 
 ENV_NAME = "CartPole-v1"
 
@@ -17,7 +14,11 @@ PROJECT_HOME = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir, os.pardir))
 if PROJECT_HOME not in sys.path:
     sys.path.append(PROJECT_HOME)
 
-MODEL_DIR = os.path.join(PROJECT_HOME, "b_dqn", "cartpole_dqn", "models")
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
+MODEL_DIR = os.path.join(PROJECT_HOME, "offline_class", "c_dqn_cartpole", "models")
+if not os.path.exists(MODEL_DIR):
+    os.mkdir(MODEL_DIR)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -27,23 +28,22 @@ def play(env, q, num_episodes):
         episode_reward = 0  # cumulative_reward
 
         # Environment 초기화와 변수 초기화
-        observation = env.reset()
-        env.render()
+        observation, _ = env.reset()
 
         episode_steps = 0
 
-        while True:
+        done = truncated = False
+
+        while not done and not truncated:
             episode_steps += 1
             action = q.get_action(observation, epsilon=0.0)
 
             # action을 통해서 next_state, reward, done, info를 받아온다
-            next_observation, reward, done, _ = env.step(action)
-            env.render()
+            next_observation, reward, done, truncated, _ = env.step(action)
 
             episode_reward += reward  # episode_reward 를 산출하는 방법은 감가률 고려하지 않는 이 라인이 더 올바름.
             observation = next_observation
 
-            time.sleep(0.05)
             if done:
                 break
 
@@ -53,18 +53,17 @@ def play(env, q, num_episodes):
 
 
 def main_q_play(num_episodes):
-    env = gym.make(ENV_NAME)
+    env = gym.make(ENV_NAME, render_mode="human")
 
     q = QNet(device=DEVICE).to(DEVICE)
-    model_params = torch.load(
-        os.path.join(MODEL_DIR, "dqn_CartPole-v1_500.0_0.0.pth")
-    )
+    model_params = torch.load(os.path.join(MODEL_DIR, "dqn_CartPole-v1_latest.pth"))
     q.load_state_dict(model_params)
+
     play(env, q, num_episodes=num_episodes)
 
     env.close()
 
 
 if __name__ == "__main__":
-    NUM_EPISODES = 5
+    NUM_EPISODES = 3
     main_q_play(num_episodes=NUM_EPISODES)

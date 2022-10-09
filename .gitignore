@@ -136,3 +136,6 @@ homework/
 
 practice/
 *.pth
+/offline_class/c_dqn_cartpole/wandb
+
+.DS_Storeol
