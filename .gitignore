@@ -133,3 +133,6 @@ dmypy.json
 online_learning/part_2/practice_2/images
 
 homework/
+
+practice/
+*.pth
