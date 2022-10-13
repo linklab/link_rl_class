@@ -31,16 +31,14 @@ def calculate_grid_world_optimal_action_values(env):
                 # 주어진 상태에서 가능한 모든 행동들의 결과로 
                 # 다음 상태 및 보상 정보 갱신
                 for action in env.ACTIONS:
-                    (next_i, next_j), reward, prob \
-                    = env.get_state_action_probability(
+                    (next_i, next_j), reward, transition_prob = env.get_state_action_probability(
                         state=(i, j), action=action
                     )
 
                     # Bellman Optimality Equation, 벨만 최적 방정식 적용
                     # 새로운 행동 가치 갱신
                     new_action_value_function[i, j, action] = \
-                        prob * (reward + DISCOUNT_RATE * \
-                        np.max(action_value_function[next_i, next_j, :]))
+                        transition_prob * (reward + DISCOUNT_RATE * np.max(action_value_function[next_i, next_j, :]))
 
         # 행동 가치 테이블 수렴 여부 판단
         if np.sum(np.abs(new_action_value_function - action_value_function)) < 1e-4:

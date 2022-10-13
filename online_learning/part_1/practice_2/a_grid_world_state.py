@@ -26,17 +26,14 @@ def calculate_grid_world_state_values(env):
                 # 주어진 상태에서 가능한 모든 행동들의 결과로
                 # 다음 상태들을 갱신
                 for action in env.ACTIONS:
-                    (next_i, next_j), reward, transition_prob \
-                    = env.get_state_action_probability(
+                    (next_i, next_j), reward, transition_prob = env.get_state_action_probability(
                         state=(i, j),
                         action=action
                     )
 
                     # Bellman-Equation, 벨만 방정식 적용
                     values.append(
-                        ACTION_PROBABILITY * transition_prob * \
-                        (reward + DISCOUNT_RATE * \
-                         value_function[next_i, next_j])
+                        ACTION_PROBABILITY * transition_prob * (reward + DISCOUNT_RATE * value_function[next_i, next_j])
                     )
 
                 new_value_function[i, j] = np.sum(values)
@@ -55,6 +52,7 @@ B_POSITION = (0, 3)         # 임의로 지정한 특별한 상태 B 좌표
 
 A_PRIME_POSITION = (4, 1)   # 상태 A에서 행동시 도착할 위치 좌표
 B_PRIME_POSITION = (2, 3)   # 상태 B에서 행동시 도착할 위치 좌표
+
 
 def main():
     # 5x5 맵 생성

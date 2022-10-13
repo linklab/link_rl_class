@@ -119,11 +119,10 @@ def draw_grid_world_optimal_policy_image(
             if TERMINAL_STATES and (i, j) in TERMINAL_STATES:
                 continue
             str_values = []
-            actions, probs = policy[(i, j)]
-            for action in actions:
+            for action in policy[(i, j)]:
                 str_values.append("{0} ({1})".format(
                     ACTION_SYMBOLS[action],
-                    np.round(probs[action], decimals=3)
+                    np.round(action, decimals=2)
                 ))
             action_str_values[i].append("\n".join(str_values))
 
