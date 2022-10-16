@@ -189,13 +189,12 @@ class DQN:
             # next_state_values.shape: torch.Size([32, 1])
             max_q_prime = q_prime_out.max(dim=1, keepdim=True).values
             max_q_prime[dones] = 0.0
-            max_q_prime = max_q_prime.detach()
 
             # target_state_action_values.shape: torch.Size([32, 1])
             targets = rewards + self.gamma * max_q_prime
 
         # loss is just scalar torch value
-        loss = F.mse_loss(targets, q_values)
+        loss = F.mse_loss(targets.detach(), q_values)
 
         # print("observations.shape: {0}, actions.shape: {1}, "
         #       "next_observations.shape: {2}, rewards.shape: {3}, dones.shape: {4}".format(
