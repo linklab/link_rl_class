@@ -49,16 +49,13 @@ class PolicyIteration:
 					else:
 						values = []
 						for action in self.env.ACTIONS:
-							(next_i, next_j), reward, prob \
-								= self.env.get_state_action_probability(
+							(next_i, next_j), reward, transition_prob = self.env.get_state_action_probability(
 								state=(i, j), action=action
 							)
 
 							# Bellman-Equation, 벨만 방정식 적용
 							values.append(
-								self.policy[i, j, action] * prob \
-								* (reward + DISCOUNT_RATE * \
-								   old_state_values[next_i, next_j])
+								self.policy[i, j, action] * transition_prob * (reward + DISCOUNT_RATE * old_state_values[next_i, next_j])
 							)
 
 						state_values[i][j] = np.sum(values)
@@ -89,13 +86,11 @@ class PolicyIteration:
 				else:
 					q_func = []
 					for action in self.env.ACTIONS:
-						(next_i, next_j), reward, prob \
-							= self.env.get_state_action_probability(
+						(next_i, next_j), reward, transition_prob = self.env.get_state_action_probability(
 							state=(i, j), action=action
 						)
 						q_func.append(
-							prob * (reward + DISCOUNT_RATE \
-									* self.state_values[next_i, next_j])
+							transition_prob * (reward + DISCOUNT_RATE * self.state_values[next_i, next_j])
 						)
 
 					new_policy[i, j, :] = softmax(q_func)
@@ -140,9 +135,9 @@ class PolicyIteration:
 		optimal_policy = dict()
 		for i in range(GRID_HEIGHT):
 			for j in range(GRID_WIDTH):
-				indices = [idx for idx, value_
-						   in enumerate(self.policy[i, j, :]) if
-						   value_ == np.max(self.policy[i, j, :])]
+				indices = [
+					idx for idx, value_ in enumerate(self.policy[i, j, :]) if value_ == np.max(self.policy[i, j, :])
+				]
 				optimal_policy[(i, j)] = indices
 
 		return optimal_policy
@@ -154,14 +149,11 @@ class PolicyIteration:
 				# 주어진 상태에서 가능한 모든 행동들의 결과로
 				# 다음 상태 및 보상 정보 갱신
 				for action in self.env.ACTIONS:
-					(next_i, next_j), reward, prob \
-						= self.env.get_state_action_probability(
+					(next_i, next_j), reward, transition_prob = self.env.get_state_action_probability(
 						state=(i, j), action=action
 					)
 
-					action_value_function[i, j, action] = \
-						prob * (reward + DISCOUNT_RATE \
-								* self.state_values[next_i, next_j])
+					action_value_function[i, j, action] = transition_prob * (reward + DISCOUNT_RATE * self.state_values[next_i, next_j])
 
 		return action_value_function
 
