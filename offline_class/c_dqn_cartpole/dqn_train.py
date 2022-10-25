@@ -37,8 +37,9 @@ class DQN:
 
         self.env_name = config["env_name"]
 
+        self.current_time = datetime.now().astimezone().strftime('%Y-%m-%d_%H-%M-%S')
+
         if self.use_wandb:
-            self.current_time = datetime.now().astimezone().strftime('%Y-%m-%d_%H:%M:%S')
             self.wandb = wandb.init(
                 project="DQN_{0}".format(self.env_name),
                 name=self.current_time,
