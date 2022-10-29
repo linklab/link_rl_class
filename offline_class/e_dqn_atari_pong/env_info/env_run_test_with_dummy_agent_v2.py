@@ -13,12 +13,10 @@ env = gym.make(
     obs_type="grayscale",
     frameskip=4,
     repeat_action_probability=0.0,
-    full_action_space=False,
-    render_mode="human"
+    full_action_space=False
 )
 
-env = FrameStack(AtariPreprocessing(env, frame_skip=1, screen_size=84), num_stack=4)
-
+env = FrameStack(AtariPreprocessing(env, frame_skip=1, screen_size=84, scale_obs=True), num_stack=4)
 
 ACTION_STRING_LIST = ['     NOOP', '     FIRE', '    RIGHT', '     LEFT', 'RIGHTFIRE', ' LEFTFIRE']
 

@@ -139,3 +139,5 @@ practice/
 /offline_class/c_dqn_cartpole/wandb
 
 .DS_Store
+
+wandb

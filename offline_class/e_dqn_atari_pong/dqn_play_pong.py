@@ -5,18 +5,18 @@ import gym
 import torch
 import os
 
-from offline_class.c_dqn_cartpole.qnet import QNet
+from offline_class.c_dqn_cartpole.qnet_pong import QNet
 
-ENV_NAME = "CartPole-v1"
+ENV_NAME = 'LunarLander-v2'
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
-PROJECT_HOME = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir, os.pardir))
+PROJECT_HOME = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir, os.pardir, os.pardir))
 if PROJECT_HOME not in sys.path:
     sys.path.append(PROJECT_HOME)
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
-MODEL_DIR = os.path.join(PROJECT_HOME, "offline_class", "c_dqn_cartpole", "models")
+MODEL_DIR = os.path.join(PROJECT_HOME, "homework", "second", "a_dqn_lunar_lander", "models")
 if not os.path.exists(MODEL_DIR):
     os.mkdir(MODEL_DIR)
 
@@ -55,8 +55,8 @@ def play(env, q, num_episodes):
 def main_q_play(num_episodes):
     env = gym.make(ENV_NAME, render_mode="human")
 
-    q = QNet(device=DEVICE).to(DEVICE)
-    model_params = torch.load(os.path.join(MODEL_DIR, "dqn_CartPole-v1_latest.pth"))
+    q = QNet(n_features=8, n_actions=4, device=DEVICE).to(DEVICE)
+    model_params = torch.load(os.path.join(MODEL_DIR, "dqn_LunarLander-v2_latest.pth"))
     q.load_state_dict(model_params)
 
     play(env, q, num_episodes=num_episodes)

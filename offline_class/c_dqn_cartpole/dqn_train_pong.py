@@ -12,7 +12,7 @@ import wandb
 from datetime import datetime
 from shutil import copyfile
 
-from offline_class.c_dqn_cartpole.qnet import QNet, ReplayBuffer, Transition
+from offline_class.c_dqn_cartpole.qnet_pong import QNet, ReplayBuffer, Transition
 
 print("TORCH VERSION:", torch.__version__)
 
@@ -127,6 +127,17 @@ class DQN:
             total_training_time = time.time() - total_train_start_time
             total_training_time = time.strftime('%H:%M:%S', time.gmtime(total_training_time))
 
+            if n_episode % self.print_episode_interval == 0:
+                print(
+                    "[Episode {:3}, Time Steps {:6}]".format(n_episode, self.time_steps),
+                    "Episode Reward: {:>5},".format(episode_reward),
+                    "Replay buffer: {:>6,},".format(self.replay_buffer.size()),
+                    "Loss: {:6.3f},".format(loss),
+                    "Epsilon: {:4.2f},".format(epsilon),
+                    "Training Steps: {:5},".format(self.training_time_steps),
+                    "Total Elapsed Time {}".format(total_training_time)
+                )
+
             if self.training_time_steps > 0 and n_episode % self.test_episode_interval == 0:
                 test_episode_reward_lst, test_episode_reward_avg = self.q_testing(self.test_num_episodes)
 
@@ -149,17 +160,6 @@ class DQN:
                     "Replay buffer": self.replay_buffer.size(),
                     "Training Steps": self.training_time_steps
                 })
-
-            if (n_episode + 1) % self.print_episode_interval == 0:
-                print(
-                    "[Episode {:3}, Time Steps {:6}]".format(n_episode + 1, self.time_steps),
-                    "Episode Reward: {:>5},".format(episode_reward),
-                    "Replay buffer: {:>6,},".format(self.replay_buffer.size()),
-                    "Loss: {:6.3f},".format(loss),
-                    "Epsilon: {:4.2f},".format(epsilon),
-                    "Training Steps: {:5},".format(self.training_time_steps),
-                    "Total Elapsed Time {}".format(total_training_time)
-                )
 
             if is_terminated:
                 break
@@ -274,7 +274,7 @@ def main():
         "epsilon_end": 0.01,                        # Epsilon 최종 값
         "epsilon_final_scheduled_percent": 0.75,    # Epsilon 최종 값으로 스케줄되는 마지막 에피소드
         "print_episode_interval": 10,               # Episode 통계 출력에 관한 에피소드 간격
-        "test_episode_interval": 50,                # 테스트를 위한 episode 간격
+        "test_episode_interval": 10,                # 테스트를 위한 episode 간격
         "test_num_episodes": 3,                     # 테스트시에 수행하는 에피소드 횟수
         "episode_reward_avg_solved": 450,           # 훈련 종료를 위한 테스트 에피소드 리워드의 Average
     }
