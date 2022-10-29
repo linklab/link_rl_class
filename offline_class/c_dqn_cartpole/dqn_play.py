@@ -5,7 +5,7 @@ import gym
 import torch
 import os
 
-from offline_class.c_dqn_cartpole.qnet_pong import QNet
+from offline_class.c_dqn_cartpole.qnet import QNet
 
 ENV_NAME = "CartPole-v1"
 

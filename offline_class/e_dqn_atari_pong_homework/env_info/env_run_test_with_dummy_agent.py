@@ -4,8 +4,6 @@ import gym
 import random
 import time
 
-from gym.wrappers import AtariPreprocessing, FrameStack
-
 ENV_NAME = 'ALE/Pong-v5'
 
 env = gym.make(
@@ -13,18 +11,10 @@ env = gym.make(
     obs_type="grayscale",
     frameskip=4,
     repeat_action_probability=0.0,
-    full_action_space=False
+    full_action_space=False,
+    render_mode="human"
 )
-
-env = FrameStack(AtariPreprocessing(env, frame_skip=1, screen_size=84, scale_obs=True), num_stack=4)
-
 ACTION_STRING_LIST = ['     NOOP', '     FIRE', '    RIGHT', '     LEFT', 'RIGHTFIRE', ' LEFTFIRE']
-
-obs_shape = env.observation_space.shape
-n_actions = env.action_space.n
-
-print("obs_shape:", obs_shape)
-print("n_actions:", n_actions)
 
 
 class Dummy_Agent:

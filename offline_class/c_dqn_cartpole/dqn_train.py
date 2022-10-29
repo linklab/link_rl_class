@@ -12,7 +12,7 @@ import wandb
 from datetime import datetime
 from shutil import copyfile
 
-from offline_class.c_dqn_cartpole.qnet_pong import QNet, ReplayBuffer, Transition
+from offline_class.c_dqn_cartpole.qnet import QNet, ReplayBuffer, Transition
 
 print("TORCH VERSION:", torch.__version__)
 
@@ -37,8 +37,9 @@ class DQN:
 
         self.env_name = config["env_name"]
 
+        self.current_time = datetime.now().astimezone().strftime('%Y-%m-%d_%H-%M-%S')
+
         if self.use_wandb:
-            self.current_time = datetime.now().astimezone().strftime('%Y-%m-%d_%H:%M:%S')
             self.wandb = wandb.init(
                 project="DQN_{0}".format(self.env_name),
                 name=self.current_time,
@@ -274,7 +275,7 @@ def main():
         "epsilon_end": 0.01,                        # Epsilon 최종 값
         "epsilon_final_scheduled_percent": 0.75,    # Epsilon 최종 값으로 스케줄되는 마지막 에피소드
         "print_episode_interval": 10,               # Episode 통계 출력에 관한 에피소드 간격
-        "test_episode_interval": 10,                # 테스트를 위한 episode 간격
+        "test_episode_interval": 50,                # 테스트를 위한 episode 간격
         "test_num_episodes": 3,                     # 테스트시에 수행하는 에피소드 횟수
         "episode_reward_avg_solved": 450,           # 훈련 종료를 위한 테스트 에피소드 리워드의 Average
     }

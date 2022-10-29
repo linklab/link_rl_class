@@ -4,19 +4,20 @@ import sys
 import gym
 import torch
 import os
+from gym.wrappers import FrameStack, AtariPreprocessing
 
-from offline_class.c_dqn_cartpole.qnet_pong import QNet
+from offline_class.e_dqn_atari_pong.qnet_pong import AtariCNNQnet
 
-ENV_NAME = 'LunarLander-v2'
+ENV_NAME = 'ALE/Pong-v5'
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
-PROJECT_HOME = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir, os.pardir, os.pardir))
+PROJECT_HOME = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir, os.pardir))
 if PROJECT_HOME not in sys.path:
     sys.path.append(PROJECT_HOME)
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
-MODEL_DIR = os.path.join(PROJECT_HOME, "homework", "second", "a_dqn_lunar_lander", "models")
+MODEL_DIR = os.path.join(PROJECT_HOME, "offline_class", "e_dqn_atari_pong", "models")
 if not os.path.exists(MODEL_DIR):
     os.mkdir(MODEL_DIR)
 
@@ -55,7 +56,20 @@ def play(env, q, num_episodes):
 def main_q_play(num_episodes):
     env = gym.make(ENV_NAME, render_mode="human")
 
-    q = QNet(n_features=8, n_actions=4, device=DEVICE).to(DEVICE)
+    env = gym.make(
+        ENV_NAME, mode=0, difficulty=0,
+        obs_type="grayscale",
+        frameskip=4,
+        repeat_action_probability=0.0,
+        full_action_space=False,
+        render_mode="human"
+    )
+    env = FrameStack(AtariPreprocessing(env, frame_skip=1, screen_size=84, scale_obs=True), num_stack=4)
+
+    obs_shape = env.observation_space.shape
+    n_actions = env.action_space.n
+
+    q = AtariCNNQnet(obs_shape=obs_shape, n_actions=n_actions, device=DEVICE).to(DEVICE)
     model_params = torch.load(os.path.join(MODEL_DIR, "dqn_LunarLander-v2_latest.pth"))
     q.load_state_dict(model_params)
 

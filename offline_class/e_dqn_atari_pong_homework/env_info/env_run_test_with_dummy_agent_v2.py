@@ -20,12 +20,6 @@ env = FrameStack(AtariPreprocessing(env, frame_skip=1, screen_size=84, scale_obs
 
 ACTION_STRING_LIST = ['     NOOP', '     FIRE', '    RIGHT', '     LEFT', 'RIGHTFIRE', ' LEFTFIRE']
 
-obs_shape = env.observation_space.shape
-n_actions = env.action_space.n
-
-print("obs_shape:", obs_shape)
-print("n_actions:", n_actions)
-
 
 class Dummy_Agent:
     def get_action(self, observation):
