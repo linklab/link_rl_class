@@ -14,7 +14,7 @@ from shutil import copyfile
 
 from gym.wrappers import FrameStack, AtariPreprocessing
 
-from homework.second.b_dqn_atari_pong.cnn_qnet import ReplayBuffer, Transition, AtariCNNQnet
+from offline_class.e_dqn_atari_pong.qnet_pong import AtariCNNQnet, ReplayBuffer, Transition
 
 print("TORCH VERSION:", torch.__version__)
 
