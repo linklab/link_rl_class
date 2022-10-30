@@ -286,7 +286,7 @@ def main():
         "print_episode_interval": 1,                # Episode 통계 출력에 관한 에피소드 간격
         "test_episode_interval": 10,                # 테스트를 위한 episode 간격
         "test_num_episodes": 3,                     # 테스트시에 수행하는 에피소드 횟수
-        "episode_reward_avg_solved": 0,             # 훈련 종료를 위한 테스트 에피소드 리워드의 Average
+        "episode_reward_avg_solved": 5,             # 훈련 종료를 위한 테스트 에피소드 리워드의 Average
     }
 
     dqn = DQN(env=env, test_env=test_env, config=config, use_wandb=True)
