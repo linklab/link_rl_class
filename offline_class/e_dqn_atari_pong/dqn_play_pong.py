@@ -70,7 +70,7 @@ def main_q_play(num_episodes):
     n_actions = env.action_space.n
 
     q = AtariCNNQnet(obs_shape=obs_shape, n_actions=n_actions, device=DEVICE).to(DEVICE)
-    model_params = torch.load(os.path.join(MODEL_DIR, "dqn_LunarLander-v2_latest.pth"))
+    model_params = torch.load(os.path.join(MODEL_DIR, "dqn_Pong-v5_latest.pth"))
     q.load_state_dict(model_params)
 
     play(env, q, num_episodes=num_episodes)
