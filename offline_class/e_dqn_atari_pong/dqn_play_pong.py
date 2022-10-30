@@ -54,8 +54,6 @@ def play(env, q, num_episodes):
 
 
 def main_q_play(num_episodes):
-    env = gym.make(ENV_NAME, render_mode="human")
-
     env = gym.make(
         ENV_NAME, mode=0, difficulty=0,
         obs_type="grayscale",
