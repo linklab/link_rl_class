@@ -71,6 +71,6 @@ if __name__ == '__main__':
 
     agent = TTTAgentDqn(name="SELF_AGENT", env=env, n_cells=n_cells)
 
-    model_file_name = "DQN_SELF_17.0.pth"
+    model_file_name = "DQN_SELF_20.0.pth"
     model_load(agent.q_model, file_name=model_file_name)
     self_play(env, agent)
