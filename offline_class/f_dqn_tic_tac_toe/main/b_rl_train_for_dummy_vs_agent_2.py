@@ -24,8 +24,8 @@ MAX_EPISODES = 100_000
 STEP_VERBOSE = False
 BOARD_RENDER = False
 
-GAME = "333"
-# GAME = "343"
+# GAME = "333"
+GAME = "343"
 
 
 def learning_for_dummy_vs_agent_2():
@@ -51,10 +51,12 @@ def learning_for_dummy_vs_agent_2():
 
     total_steps = 0
 
-    early_stop_model_saver = EarlyStopModelSaver(target_win_rate=99.0)
-    win_rate = 0.0
+    early_stop_model_saver = EarlyStopModelSaver(target_win_percent=99.0)
+    win_percent = 0.0
 
     last_scheduled_episodes = MAX_EPISODES * LAST_SCHEDULED_PERCENT
+
+    early_stop = False
 
     for episode in range(1, MAX_EPISODES + 1):
         state = env.reset()
@@ -82,7 +84,7 @@ def learning_for_dummy_vs_agent_2():
 
             if done:
                 # 게임 완료 및 게임 승패 관련 통계 정보 획득
-                win_rate = print_game_statistics(
+                win_percent = print_game_statistics(
                     info, episode, epsilon, total_steps, game_status, PLAY_TYPE.SECOND
                 )
 
@@ -107,7 +109,7 @@ def learning_for_dummy_vs_agent_2():
 
                 if done:
                     # 게임 완료 및 게임 승패 관련 통계 정보 출력
-                    win_rate = print_game_statistics(
+                    win_percent = print_game_statistics(
                         info, episode, epsilon, total_steps, game_status, PLAY_TYPE.SECOND
                     )
 
@@ -127,12 +129,19 @@ def learning_for_dummy_vs_agent_2():
 
         if episode > 5000:
             early_stop = early_stop_model_saver.check(
-                agent_2.agent_type, PLAY_TYPE.SECOND, win_rate, agent_2_episode_td_error, agent_2.model
+                agent_2.agent_type, PLAY_TYPE.SECOND, win_percent, agent_2_episode_td_error, agent_2.q_model
             )
             if early_stop:
                 break
 
-    draw_performance(game_status, MAX_EPISODES)
+    if not early_stop:
+        early_stop_model_saver.save_checkpoint(
+            agent_type=agent_2.agent_type, play_type=PLAY_TYPE.SECOND, win_percent=win_percent,
+            loss=agent_2_episode_td_error,
+            q_model=agent_2.q_model
+        )
+
+    draw_performance(game_status, episode)
 
 
 if __name__ == '__main__':

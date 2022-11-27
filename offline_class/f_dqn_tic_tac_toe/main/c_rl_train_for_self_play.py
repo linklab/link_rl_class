@@ -19,13 +19,13 @@ FINAL_EPSILON = 0.01
 LAST_SCHEDULED_PERCENT = 0.75
 
 # 최대 반복 에피소드(게임) 횟수
-MAX_EPISODES = 100_000
+MAX_EPISODES = 200_000
 
 STEP_VERBOSE = False
 BOARD_RENDER = False
 
-GAME = "333"
-# GAME = "343"
+# GAME = "333"
+GAME = "343"
 
 
 def learning_for_self_play():
@@ -52,8 +52,8 @@ def learning_for_self_play():
 
     total_steps = 0
 
-    early_stop_model_saver = EarlyStopModelSaver(target_win_rate=98.0)
-    win_rate = 0.0
+    early_stop_model_saver = EarlyStopModelSaver()
+    win_percent = 0.0
 
     last_scheduled_episodes = MAX_EPISODES * LAST_SCHEDULED_PERCENT
 
@@ -89,7 +89,7 @@ def learning_for_self_play():
 
             if done:
                 # 게임 완료 및 게임 승패 관련 통계 정보 출력
-                win_rate = print_game_statistics(
+                win_percent = print_game_statistics(
                     info, episode, epsilon, total_steps, game_status, PLAY_TYPE.SELF
                 )
 
@@ -122,7 +122,7 @@ def learning_for_self_play():
 
                 if done:
                     # 게임 완료 및 게임 승패 관련 통계 정보 출력
-                    win_rate = print_game_statistics(
+                    win_percent = print_game_statistics(
                         info, episode, epsilon, total_steps, game_status, PLAY_TYPE.SELF
                     )
 
@@ -151,20 +151,20 @@ def learning_for_self_play():
         game_status.set_agent_1_episode_td_error(agent_1_episode_td_error)
         game_status.set_agent_2_episode_td_error(agent_2_episode_td_error)
 
-        if episode > 5000:
-            early_stop = early_stop_model_saver.check(
-                self_agent_1.agent_type, PLAY_TYPE.SELF, win_rate,
-                (agent_1_episode_td_error + agent_2_episode_td_error) / 2.0,
-                self_agent_1.model
-            )
-            if early_stop:
-                break
+        # if episode > 5000:
+        #     early_stop = early_stop_model_saver.check(
+        #         self_agent_1.agent_type, PLAY_TYPE.SELF, win_percent,
+        #         (agent_1_episode_td_error + agent_2_episode_td_error) / 2.0,
+        #         self_agent_1.q_model
+        #     )
+        #     if early_stop:
+        #         break
 
     if not early_stop:
         early_stop_model_saver.save_checkpoint(
-            self_agent_1.agent_type, PLAY_TYPE.SELF, win_rate,
+            self_agent_1.agent_type, PLAY_TYPE.SELF, win_percent,
             (agent_1_episode_td_error + agent_2_episode_td_error) / 2.0,
-            self_agent_1.model
+            self_agent_1.q_model
         )
 
     draw_performance(game_status, MAX_EPISODES)

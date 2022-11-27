@@ -160,15 +160,14 @@ class TicTacToe343:
             else:
                 reward = 0.0
         else:
-            info = {'current_agent_int': self.current_agent_int}
+            info = {
+                'current_agent_int': self.current_agent_int
+            }
             reward = 0.0
 
         self.current_state = next_state
 
-        if self.current_agent_int == PLAYER_1_INT:
-            self.current_agent_int = PLAYER_2_INT
-        else:
-            self.current_agent_int = PLAYER_1_INT
+        self.current_agent_int = PLAYER_2_INT if self.current_agent_int == PLAYER_1_INT else PLAYER_1_INT
 
         return next_state, reward, done, info
 

@@ -25,10 +25,10 @@ class TTTAgentDqn:
         self.agent_type = AGENT_TYPE.DQN.value
 
         # network
-        self.q = QNet(n_features=12, n_actions=12)
+        self.q_model = QNet(n_features=12, n_actions=12)
         self.target_q = QNet(n_features=12, n_actions=12)
-        self.target_q.load_state_dict(self.q.state_dict())
-        self.optimizer = optim.Adam(self.q.parameters(), lr=self.learning_rate)
+        self.target_q.load_state_dict(self.q_model.state_dict())
+        self.optimizer = optim.Adam(self.q_model.parameters(), lr=self.learning_rate)
 
         # agent
         self.replay_buffer = ReplayBuffer(self.replay_buffer_size)
@@ -38,13 +38,13 @@ class TTTAgentDqn:
         self.time_steps = 0
         self.training_time_steps = 0
 
-        self.model = self.q
-
     def get_action(self, state, epsilon=0.0, mode="TRAIN"):
         available_actions = state.get_available_actions()
         unavailable_actions = list(set(self.env.ALL_ACTIONS) - set(available_actions))
         obs = state.data.flatten()
         action = None
+        # dqn 모델에 환경 입력 후 예측 액션 값 도출
+        action_prob = self.q_model.forward(obs)
 
         # TODO
 
@@ -64,7 +64,7 @@ class TTTAgentDqn:
         # actions.shape: torch.Size([32, 1]),
         # next_observations.shape: torch.Size([32, 4]),
         # rewards.shape: torch.Size([32, 1]),
-        # dones.shape: torch.Size([32])
+        # dones.shape: torch.Size([32, 1])
         observations, actions, next_observations, rewards, dones = batch
 
         # TODO

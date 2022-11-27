@@ -10,8 +10,8 @@ from offline_class.f_dqn_tic_tac_toe.common.a_env_tic_tac_toe_343 import TicTacT
 # from offline_class.f_dqn_tic_tac_toe.agents.c_dqn_agent import TTTAgentDqn
 from offline_class.f_dqn_tic_tac_toe.agents.c_dqn_agent_solution import TTTAgentDqn
 
-GAME = "333"
-# GAME = "343"
+# GAME = "333"
+GAME = "343"
 
 
 def play_with_agent_2(env, agent_2):
@@ -68,6 +68,7 @@ if __name__ == '__main__':
 
     agent_2 = TTTAgentDqn(name="AGENT_2", env=env, n_cells=n_cells)
 
-    model_file_name = "DQN_SECOND_99.0.pth"
-    model_load(agent_2.q, file_name=model_file_name)
+    model_file_name = "DQN_SECOND_95.0.pth"
+    model_load(agent_2.q_model, file_name=model_file_name)
     play_with_agent_2(env, agent_2)
+

@@ -132,11 +132,11 @@ def print_game_statistics(
     )
 
     if play_type == PLAY_TYPE.FIRST:
-        win_rate = game_status.player_1_win_rate_over_100_games[-1]
+        win_percent = game_status.player_1_win_rate_over_100_games[-1]
     elif play_type == PLAY_TYPE.SECOND:
-        win_rate = game_status.player_2_win_rate_over_100_games[-1]
+        win_percent = game_status.player_2_win_rate_over_100_games[-1]
     elif play_type == PLAY_TYPE.SELF:
-        win_rate = game_status.draw_rate_over_100_games[-1]
+        win_percent = game_status.draw_rate_over_100_games[-1]
     else:
         raise ValueError()
 
@@ -159,7 +159,7 @@ def print_game_statistics(
                   np.average(game_status.agent_2_episode_td_error[-100:]) if len(game_status.agent_2_episode_td_error) > 0 else 0.0
               ))
 
-    return win_rate
+    return win_percent
 
 
 def print_step_status(

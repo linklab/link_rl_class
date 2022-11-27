@@ -10,8 +10,8 @@ from offline_class.f_dqn_tic_tac_toe.common.d_utils import model_load
 # from offline_class.f_dqn_tic_tac_toe.agents.c_dqn_agent import TTTAgentDqn
 from offline_class.f_dqn_tic_tac_toe.agents.c_dqn_agent_solution import TTTAgentDqn
 
-GAME = "333"
-# GAME = "343"
+# GAME = "333"
+GAME = "343"
 
 
 def self_play(env, agent_2):
@@ -71,6 +71,6 @@ if __name__ == '__main__':
 
     agent = TTTAgentDqn(name="SELF_AGENT", env=env, n_cells=n_cells)
 
-    model_file_name = "DQN_SELF_20.0.pth"
-    model_load(agent.model, file_name=model_file_name)
+    model_file_name = "DQN_SELF_17.0.pth"
+    model_load(agent.q_model, file_name=model_file_name)
     self_play(env, agent)

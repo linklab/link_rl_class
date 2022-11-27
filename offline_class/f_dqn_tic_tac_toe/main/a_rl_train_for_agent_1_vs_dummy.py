@@ -21,8 +21,8 @@ MAX_EPISODES = 100_000
 STEP_VERBOSE = False
 BOARD_RENDER = False
 
-GAME = "333"
-# GAME = "343"
+# GAME = "333"
+GAME = "343"
 
 
 # 선수 에이전트: Q-Learning 에이전트, 후수 에이전트: Dummy 에이전트
@@ -52,11 +52,13 @@ def learning_for_agent_1_vs_dummy():
 
     total_steps = 0
 
-    early_stop_model_saver = EarlyStopModelSaver(target_win_rate=99.0)
-    win_rate = 0.0
+    early_stop_model_saver = EarlyStopModelSaver(target_win_percent=99.0)
+    win_percent = 0.0
+
     last_scheduled_episodes = MAX_EPISODES * LAST_SCHEDULED_PERCENT
 
-    # Episodes
+    early_stop = False
+
     for episode in range(1, MAX_EPISODES + 1):
         state = env.reset()
 
@@ -89,7 +91,7 @@ def learning_for_agent_1_vs_dummy():
                 )
 
                 # 게임 완료 및 게임 승패 관련 통계 정보 획득
-                win_rate = print_game_statistics(
+                win_percent = print_game_statistics(
                     info, episode, epsilon, total_steps, game_status, PLAY_TYPE.FIRST
                 )
             else:
@@ -105,7 +107,7 @@ def learning_for_agent_1_vs_dummy():
                     )
 
                     # 게임 완료 및 게임 승패 관련 통계 정보 출력
-                    win_rate = print_game_statistics(
+                    win_percent = print_game_statistics(
                         info, episode, epsilon, total_steps, game_status, PLAY_TYPE.FIRST
                     )
                 else:
@@ -121,13 +123,19 @@ def learning_for_agent_1_vs_dummy():
             early_stop = early_stop_model_saver.check(
                 agent_type=agent_1.agent_type,
                 play_type=PLAY_TYPE.FIRST,
-                win_rate=win_rate,
+                win_percent=win_percent,
                 loss=agent_1_episode_td_error,
-                model=agent_1.model
+                q_model=agent_1.q_model
             )
             if early_stop:
                 break
 
+    if not early_stop:
+        early_stop_model_saver.save_checkpoint(
+            agent_type=agent_1.agent_type, play_type=PLAY_TYPE.FIRST, win_percent=win_percent,
+            loss=agent_1_episode_td_error,
+            q_model=agent_1.q_model
+        )
     draw_performance(game_status, MAX_EPISODES)
 
 
