@@ -141,3 +141,5 @@ practice/
 .DS_Store
 
 wandb
+
+/offline_class/f_dqn_tic_tac_toe/agents/c_dqn_agent_solution.py
